@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
 
-export default function Home() {
+export default function Home({externalPostData}) {
   return (
     <div className={styles.container}>
       <Head>
@@ -29,6 +29,16 @@ export default function Home() {
               Lorem Ipsum is simply dummy text of the printing and typesetting industry...
             </p>
           </div>
+           {externalPostData.map((data) => {
+            return (
+              <div className={styles.card} key={data.id}>
+                <Link href={data.link}>
+                  <h3>{data.title}</h3>
+                </Link>
+                <p>{data.excerpt}</p>
+              </div>
+            );
+          })}
         </div>
       </main>
       <footer className={styles.footer}>
@@ -36,3 +46,17 @@ export default function Home() {
     </div>
   );
 }
+
+
+export async function getStaticProps() {
+  const apiURL = "http://localhost:3001/posts";
+  const response = await fetch(apiURL);
+  const data = await response.json();
+
+  return{
+    props: {
+      externalPostData:data,
+    },
+  }
+}
+
